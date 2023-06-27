@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemController {
 
-    @Qualifier("serviceFeign")
+    @Qualifier("serviceRestTemplate")
     private final ItemService service;
 
     @GetMapping("/listar")
