@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Service("serviceFeign")
 @AllArgsConstructor
+@Primary
 public class ItemServiceFeign implements ItemService {
 
     private ProductoClienteRest clienteFeign;

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service("serviceRestTemplate")
 @AllArgsConstructor
-@Primary
 public class ItemServiceImpl implements ItemService {
 
     private final String RUTA_PRODUCTO = "http://servicio-productos";
