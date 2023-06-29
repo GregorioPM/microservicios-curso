@@ -27,8 +27,8 @@ public class ProductoController {
     public List<Producto> getAll() {
         return productoService.findAll().stream()
                 .map(p -> {
-                    //p.setPort(Integer.parseInt(env.getProperty("local.server.port")));
-                    p.setPort(port);
+                    p.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+                    //p.setPort(port);
                     return p;
                 }).collect(Collectors.toList());
     }
@@ -36,8 +36,8 @@ public class ProductoController {
     @GetMapping("/ver/{id}")
     public Producto getById(@PathVariable Long id) {
         Producto producto = productoService.findById(id);
-        //producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
-        producto.setPort(port);
+        producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+        //producto.setPort(port);
         /*try {
             Thread.sleep(2000L);
         } catch (InterruptedException e) {
