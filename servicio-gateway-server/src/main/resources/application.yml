@@ -1,3 +1,27 @@
+resilience4j:
+  circuitbreaker:
+    configs:
+      #nombre cualquiera
+      defecto:
+        sliding-window-size: 6
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 20s
+        permitted-number-of-calls-in-half-open-state: 4
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 2s
+    instances:
+      productos:
+        base-config: defecto
+  timelimiter:
+    configs:
+      defecto:
+        #tiene prioridad sobre la llamada lenta
+        timeout-duration: 2s
+    instances:
+      productos:
+        base-config: defecto
+
+
 spring:
   cloud:
     gateway:
@@ -13,6 +37,12 @@ spring:
           #- Query=color
           #- Cookie=color, azul
         filters:
+          - name: CircuitBreaker
+            args:
+              name: productos
+              statusCodes: 500
+              #se desabilita productos por eso la ruta debe ser distinta
+              fallbackUri: forward:/api/items/ver/2/5
           - StripPrefix=2
           - EjemploCookie=Hola mensaje personalizado, Usuario, GregorioPerez
           #- name: Ejemplo

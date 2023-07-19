@@ -43,7 +43,7 @@ public class ProductoController {
             TimeUnit.SECONDS.sleep(5L);
         }
         Producto producto = productoService.findById(id);
-        producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+        //producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
         //producto.setPort(port);
         return producto;
     }
