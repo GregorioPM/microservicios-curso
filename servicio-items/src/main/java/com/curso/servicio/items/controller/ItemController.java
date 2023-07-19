@@ -34,8 +34,8 @@ public class ItemController {
     public Item detalle(@PathVariable Long id, @PathVariable Integer cantidad){
         //return service.findById(id, cantidad);
         return cbFactory.create("items")
-                .run(()-> service.findById(id, cantidad)/*,
-                        e -> metodoAlternativo(id, cantidad, e)*/);
+                .run(()-> service.findById(id, cantidad),
+                        e -> metodoAlternativo(id, cantidad, e));
     }
 
     public Item metodoAlternativo(Long id, Integer cantidad, Throwable e){
