@@ -2,6 +2,7 @@ package com.curso.servicio.items.service.impl;
 
 import com.curso.servicio.items.clientes.ProductoClienteRest;
 import com.curso.servicio.items.models.Item;
+import com.curso.servicio.items.models.Producto;
 import com.curso.servicio.items.service.ItemService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -27,5 +28,21 @@ public class ItemServiceFeign implements ItemService {
     @Override
     public Item findById(Long id, Integer cantidad) {
         return new Item(clienteFeign.detalle(id), cantidad);
+    }
+
+    @Override
+    public Producto save(Producto producto) {
+
+        return clienteFeign.crear(producto);
+    }
+
+    @Override
+    public Producto update(Producto producto, Long id) {
+        return clienteFeign.update(producto, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        clienteFeign.eliminar(id);
     }
 }
