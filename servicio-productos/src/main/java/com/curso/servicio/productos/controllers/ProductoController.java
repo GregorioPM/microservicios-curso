@@ -1,6 +1,6 @@
 package com.curso.servicio.productos.controllers;
 
-import com.curso.servicio.productos.models.entity.Producto;
+import com.curso.commons.models.entity.Producto;
 import com.curso.servicio.productos.services.IProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

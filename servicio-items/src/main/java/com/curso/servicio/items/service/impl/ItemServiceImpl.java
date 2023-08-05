@@ -1,10 +1,9 @@
 package com.curso.servicio.items.service.impl;
 
+import com.curso.commons.models.entity.Producto;
 import com.curso.servicio.items.models.Item;
-import com.curso.servicio.items.models.Producto;
 import com.curso.servicio.items.service.ItemService;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

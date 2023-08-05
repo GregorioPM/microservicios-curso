@@ -1,11 +1,10 @@
 package com.curso.servicio.items.controller;
 
+import com.curso.commons.models.entity.Producto;
 import com.curso.servicio.items.models.Item;
-import com.curso.servicio.items.models.Producto;
 import com.curso.servicio.items.service.ItemService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;

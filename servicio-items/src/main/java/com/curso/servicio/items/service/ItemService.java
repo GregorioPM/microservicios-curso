@@ -1,7 +1,7 @@
 package com.curso.servicio.items.service;
 
+import com.curso.commons.models.entity.Producto;
 import com.curso.servicio.items.models.Item;
-import com.curso.servicio.items.models.Producto;
 
 import java.util.List;
 

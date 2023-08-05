@@ -1,6 +1,6 @@
 package com.curso.servicio.items.clientes;
 
-import com.curso.servicio.items.models.Producto;
+import com.curso.commons.models.entity.Producto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

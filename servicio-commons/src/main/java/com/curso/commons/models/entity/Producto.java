@@ -1,5 +1,4 @@
-package com.curso.servicio.productos.models.entity;
-
+package com.curso.commons.models.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package com.curso.servicio.productos.services;
 
-import com.curso.servicio.productos.models.entity.Producto;
+import com.curso.commons.models.entity.Producto;
 
 import java.util.List;
 
