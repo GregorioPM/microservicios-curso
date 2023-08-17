@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Producto update(Producto producto, Long id) {
+    public Producto update(Long id, Producto producto) {
         Map<String, String> pathVariables = new HashMap<String, String>();
         pathVariables.put("id", id.toString());
         HttpEntity<Producto> body = new HttpEntity<Producto>(producto);

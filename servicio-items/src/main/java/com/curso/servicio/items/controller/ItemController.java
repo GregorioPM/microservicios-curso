@@ -117,7 +117,7 @@ public class ItemController {
     @PutMapping("/editar/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Producto editar(@RequestBody Producto producto, @PathVariable Long id){
-        return service.update(producto, id);
+        return service.update(id, producto);
     }
 
     @DeleteMapping("/eliminar/{id}")

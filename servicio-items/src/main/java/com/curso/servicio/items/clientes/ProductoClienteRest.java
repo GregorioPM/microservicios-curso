@@ -19,7 +19,7 @@ public interface ProductoClienteRest {
     public Producto crear(@RequestBody Producto producto);
 
     @PutMapping("/editar/{id}")
-    public Producto update(@RequestBody Producto producto, @PathVariable Long id);
+    public Producto update(@PathVariable Long id, @RequestBody Producto producto);
 
     @DeleteMapping("/eliminar/{id}")
     public void eliminar(@PathVariable Long id);

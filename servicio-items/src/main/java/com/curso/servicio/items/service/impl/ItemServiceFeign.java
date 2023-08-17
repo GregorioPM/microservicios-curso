@@ -37,8 +37,8 @@ public class ItemServiceFeign implements ItemService {
     }
 
     @Override
-    public Producto update(Producto producto, Long id) {
-        return clienteFeign.update(producto, id);
+    public Producto update(Long id, Producto producto) {
+        return clienteFeign.update(id, producto);
     }
 
     @Override
