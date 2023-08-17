@@ -63,7 +63,7 @@ public class AuthorizationConfigServer extends AuthorizationServerConfigurerAdap
     public JwtAccessTokenConverter accessTokenConverter(){
         JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
         System.out.println(env.getProperty("algun_codigo_secreto_aeiou"));
-        tokenConverter.setSigningKey(env.getProperty("algun_codigo_secreto_aeiou"));
+        tokenConverter.setSigningKey(env.getProperty("config.security.oauth.jwt.key"));
         return tokenConverter;
     }
 
