@@ -1,8 +1,11 @@
 package com.curso.oauth.security;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -19,6 +22,7 @@ import java.util.Arrays;
 @Configuration
 @EnableAuthorizationServer
 @AllArgsConstructor
+@RefreshScope
 public class AuthorizationConfigServer extends AuthorizationServerConfigurerAdapter {
 
     private final BCryptPasswordEncoder passwordEncoder;
@@ -27,6 +31,9 @@ public class AuthorizationConfigServer extends AuthorizationServerConfigurerAdap
 
     private final InfoAdicionalToken infoAdicionalToken;
 
+    @Autowired
+    private Environment env;
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.tokenKeyAccess("permiteAll()").checkTokenAccess("isAuthenticated()");
@@ -34,8 +41,8 @@ public class AuthorizationConfigServer extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("frontendapp")
-                .secret(passwordEncoder.encode("12345"))
+        clients.inMemory().withClient(env.getProperty("config.security.oauth.client.id"))
+                .secret(passwordEncoder.encode(env.getProperty("config.security.oauth.client.secret")))
                 .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(3600)
@@ -55,7 +62,8 @@ public class AuthorizationConfigServer extends AuthorizationServerConfigurerAdap
     @Bean
     public JwtAccessTokenConverter accessTokenConverter(){
         JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
-        tokenConverter.setSigningKey("algun_codigo_secreto_aeiou");
+        System.out.println(env.getProperty("algun_codigo_secreto_aeiou"));
+        tokenConverter.setSigningKey(env.getProperty("algun_codigo_secreto_aeiou"));
         return tokenConverter;
     }
 
