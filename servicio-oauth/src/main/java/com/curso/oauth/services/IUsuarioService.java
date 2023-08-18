@@ -5,4 +5,6 @@ import com.curso.usuarios.commons.models.entity.Usuario;
 public interface IUsuarioService {
 
     Usuario findByUsername(String username);
+
+    Usuario update(Long id,Usuario usuario);
 }
