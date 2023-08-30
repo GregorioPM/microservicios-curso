@@ -1,5 +1,6 @@
 package com.curso.oauth.services;
 
+import brave.Tracer;
 import com.curso.oauth.clients.UsuarioFeignClient;
 import com.curso.usuarios.commons.models.entity.Usuario;
 import feign.FeignException;
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UsuarioService implements IUsuarioService, UserDetailsService {
     private final UsuarioFeignClient client;
+
+    private final Tracer tracer;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
@@ -37,8 +40,10 @@ public class UsuarioService implements IUsuarioService, UserDetailsService {
             return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(),
                     true, true, true, authorities);
         } catch (FeignException e){
-            log.error("Error en el login, no existe el usuario en el sistema " + username);
-            throw new UsernameNotFoundException("Error en el login, no existe el usuario en el sistema " + username);
+            String error = "Error en el login, no existe el usuario en el sistema ";
+            log.error( error + username);
+            tracer.currentSpan().tag("error.mensaje", error + ":" + e.getMessage());
+            throw new UsernameNotFoundException(error + username);
         }
     }
 

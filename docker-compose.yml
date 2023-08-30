@@ -1,0 +1,45 @@
+version: "3.8"  # Puedes ajustar la versión según tu necesidad
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    mem_limit: 350m
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - gretrozh
+
+  zipkin:
+    #image: openzipkin/zipkin-slim
+    image: openzipkin/zipkin
+    mem_limit: 512m
+    expose:
+      - "9411"
+    ports:
+      - "9411:9411"
+    environment:
+      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
+      - rabbit_addresses=rabbitmq
+      - storage_type=mem
+      - STORAGE_TYPE=mysql
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=root
+      - MYSQL_PASS=root
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: sh -c "sleep 10 && rabbitmqadmin declare queue name=zipkin durable=true"
+    networks:
+      - gretrozh
+
+networks:
+  gretrozh:

@@ -1,5 +1,6 @@
 package com.curso.oauth.event;
 
+import brave.Tracer;
 import com.curso.oauth.services.IUsuarioService;
 import com.curso.usuarios.commons.models.entity.Usuario;
 import feign.FeignException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 public class AuthenticationSuccessErrorHandler implements AuthenticationEventPublisher {
 
     private final IUsuarioService usuarioService;
+
+    private final Tracer tracer;
 
     @Override
     public void publishAuthenticationSuccess(Authentication authentication) {
@@ -43,6 +46,8 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
         System.out.println(mensaje);
         log.info(mensaje);
         try {
+            StringBuilder errors = new StringBuilder();
+            errors.append(mensaje);
             Usuario usuario = usuarioService.findByUsername(authentication.getName());
             if(usuario.getIntentos() == null){
                 usuario.setIntentos(0);
@@ -50,11 +55,15 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
             log.info("Intentos actual es de: " + usuario.getIntentos());
             usuario.setIntentos(usuario.getIntentos() + 1);
             log.info("Intentos despues es de: " + usuario.getIntentos());
+            errors.append(" - " + "Intentos del login: " + usuario.getIntentos());
             if(usuario.getIntentos() >= 3){
-                log.error(String.format("El usuario %s deshabilitado por maximo intentos.", authentication.getName()));
+                String errorMaximoIntentos = String.format("El usuario %s deshabilitado por maximo intentos.", authentication.getName());
+                log.error(errorMaximoIntentos);
+                errors.append(" - " + errorMaximoIntentos);
                 usuario.setEnabled(false);
             }
             usuarioService.update(usuario.getId(), usuario);
+            tracer.currentSpan().tag("error.mensaje", errors.toString());
         } catch (FeignException exception) {
             log.error(String.format("El usuario %s no existe en el sistema", authentication.getName()));
         }
