@@ -1,45 +1,118 @@
-version: "3.8"  # Puedes ajustar la versión según tu necesidad
+version: "3.8"
 
 services:
-  rabbitmq:
-    image: rabbitmq:3.12-management
-    mem_limit: 350m
-    expose:
-      - "5672"
-      - "15672"
+  config-server:
+    image: config-server:v1
     ports:
-      - 5672:5672
-      - 15672:15672
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      - "8888:8888"
+    restart: always
     networks:
-      - gretrozh
-
-  zipkin:
-    #image: openzipkin/zipkin-slim
-    image: openzipkin/zipkin
-    mem_limit: 512m
-    expose:
-      - "9411"
+      - springcloud
+  servicio-eureka-server:
+    image: servicio-eureka-server:v1
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - springcloud
+  mysql8:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - springcloud
+    environment:
+      MYSQL_DATABASE: db_springboot_cloud
+      MYSQL_ROOT_PASSWORD: root
+  postgres12:
+    image: postgres:12-alpine
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - springcloud
+    environment:
+      POSTGRES_DB: db_springboot_cloud
+      POSTGRES_PASSWORD: root
+  servicio-productos:
+    image: servicio-productos:v1
+    restart: always
+    networks:
+      - springcloud
+    depends_on:
+      - config-server
+      - servicio-eureka-server
+      - mysql8
+  servicio-items:
+    image: servicio-items:v1
+    ports:
+      - "8002:8002"
+      - "8005:8005"
+      - "8007:8007"
+    restart: always
+    networks:
+      - springcloud
+    depends_on:
+      - config-server
+      - servicio-eureka-server
+      - servicio-productos
+  servicio-usuarios:
+    image: servicio-usuarios:v1
+    restart: always
+    networks:
+      - springcloud
+    depends_on:
+      - config-server
+      - servicio-eureka-server
+      - postgres12
+  servicio-oauth:
+    image: servicio-oauth:v1
+    ports:
+      - "9100:9100"
+    restart: always
+    networks:
+      - springcloud
+    depends_on:
+      - config-server
+      - servicio-eureka-server
+      - servicio-usuarios
+  microservicios-rabbitMQ:
+    image: rabbitmq:3.12-management-alpine
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    restart: always
+    networks:
+      - springcloud
+  zipkin-server:
+    image: zipkin-server:v1
     ports:
       - "9411:9411"
-    environment:
-      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
-      - rabbit_addresses=rabbitmq
-      - storage_type=mem
-      - STORAGE_TYPE=mysql
-      - MYSQL_DB=zipkin
-      - MYSQL_USER=root
-      - MYSQL_PASS=root
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: sh -c "sleep 10 && rabbitmqadmin declare queue name=zipkin durable=true"
+    restart: always
     networks:
-      - gretrozh
+      - springcloud
+    depends_on:
+      - microservicios-rabbitMQ
+      - mysql8
+    environment:
+      RABBIT_ADDRESSES: microservicios-rabbitMQ:5672
+      STORAGE_TYPE: mysql
+      MYSQL_USER: zipkin
+      MYSQL_PASS: zipkin
+      MYSQL_HOST: mysql8
+  servicio-gateway:
+    image: gateway-server:v1
+    ports:
+      - "8090:8090"
+    restart: always
+    networks:
+      - springcloud
+    depends_on:
+      - config-server
+      - servicio-eureka-server
+      - servicio-productos
+      - servicio-items
 
 networks:
-  gretrozh:
+  springcloud:
